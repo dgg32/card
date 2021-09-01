@@ -1,0 +1,16 @@
+LOAD CSV WITH HEADERS FROM 'file:///drug.csv' AS row MERGE (d:drug {aro: row.aro, name: row.name, definition: row.definition, is_a: row.is_a});
+
+LOAD CSV WITH HEADERS FROM 'file:///pathogen.csv' AS row MERGE (p:pathogen {name: row.name});
+
+LOAD CSV WITH HEADERS FROM 'file:///resistance.csv' AS row MERGE (r:resistance {aro: row.aro, name: row.name, definition: row.definition, is_a: row.is_a});
+
+CREATE CONSTRAINT ON (d:drug) ASSERT d.aro IS UNIQUE;
+CREATE CONSTRAINT ON (p:pathogen) ASSERT p.name IS UNIQUE;
+CREATE CONSTRAINT ON (r:resistance) ASSERT r.aro IS UNIQUE;
+
+LOAD CSV WITH HEADERS FROM 'file:///pathogen_resistance.csv' AS row MERGE (p:pathogen {name: row.pathogen}) MERGE (r:resistance {aro: row.resistance}) MERGE (p)-[h:has_resistance {criteria: row.criteria, model_type: row.model_type}]->(r);
+
+
+LOAD CSV WITH HEADERS FROM 'file:///resistance_drug.csv' AS row MERGE (r:resistance {aro: row.resistance}) MERGE (d:drug {aro: row.drug}) MERGE (r)-[h:confers_resistance_to_drug_class]->(d);
+
+MATCH p = (b:pathogen) -[h:has_resistance]->(r:resistance) -[:confers_resistance_to_drug_class]->(d:drug) WHERE b.name = "Escherichia coli" AND h.criteria="perfect" RETURN p
