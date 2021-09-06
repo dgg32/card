@@ -1,4 +1,4 @@
-pathogen,resistance,criteria,model type
+pathogen,resistance,criteria,model_type
 "Pseudomonas aeruginosa","ARO:3002501","perfect_strict","protein homolog model"
 "Phocaeicola dorei","ARO:3002999","perfect","protein homolog model"
 "Phocaeicola dorei","ARO:3002999","perfect_strict","protein homolog model"
