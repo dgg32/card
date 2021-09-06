@@ -14,3 +14,10 @@ LOAD CSV WITH HEADERS FROM 'file:///pathogen_resistance.csv' AS row MERGE (p:pat
 LOAD CSV WITH HEADERS FROM 'file:///resistance_drug.csv' AS row MERGE (r:resistance {aro: row.resistance}) MERGE (d:drug {aro: row.drug}) MERGE (r)-[h:confers_resistance_to_drug_class]->(d);
 
 MATCH p = (b:pathogen) -[h:has_resistance]->(r:resistance) -[:confers_resistance_to_drug_class]->(d:drug) WHERE b.name = "Escherichia coli" AND h.criteria="perfect" RETURN p
+
+
+MATCH (n) DETACH DELETE n;
+
+DROP CONSTRAINT ON ( drug:drug ) ASSERT (drug.aro) IS UNIQUE;
+DROP CONSTRAINT ON ( pathogen:pathogen ) ASSERT (pathogen.name) IS UNIQUE;
+DROP CONSTRAINT ON ( resistance:resistance ) ASSERT (resistance.aro) IS UNIQUE;
