@@ -15,9 +15,6 @@ LOAD CSV WITH HEADERS FROM 'file:///resistance_drug.csv' AS row MERGE (r:resista
 
 MATCH p = (b:pathogen) -[h:has_resistance]->(r:resistance) -[:confers_resistance_to_drug_class]->(d:drug) WHERE b.name = "Escherichia coli" AND h.criteria="perfect" RETURN p
 
+MATCH (p:pathogen)-->(r:resistance) OPTIONAL MATCH (r)-->(d:drug) RETURN p.name, COUNT(DISTINCT(r)) as resistance_count, COUNT(DISTINCT(d)) as resistance_drug_count ORDER BY resistance_count DESC LIMIT 10;
 
-MATCH (n) DETACH DELETE n;
-
-DROP CONSTRAINT ON ( drug:drug ) ASSERT (drug.aro) IS UNIQUE;
-DROP CONSTRAINT ON ( pathogen:pathogen ) ASSERT (pathogen.name) IS UNIQUE;
-DROP CONSTRAINT ON ( resistance:resistance ) ASSERT (resistance.aro) IS UNIQUE;
+MATCH path = (p:pathogen)-->(r:resistance) -->(d:drug) WHERE p.name = "Klebsiella pneumoniae"  RETURN path;
