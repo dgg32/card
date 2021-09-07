@@ -18,3 +18,5 @@ MATCH p = (b:pathogen) -[h:has_resistance]->(r:resistance) -[:confers_resistance
 MATCH (p:pathogen)-->(r:resistance) OPTIONAL MATCH (r)-->(d:drug) RETURN p.name, COUNT(DISTINCT(r)) as resistance_count, COUNT(DISTINCT(d)) as resistance_drug_count ORDER BY resistance_count DESC LIMIT 10;
 
 MATCH path = (p:pathogen)-->(r:resistance) -->(d:drug) WHERE p.name = "Klebsiella pneumoniae"  RETURN path;
+
+MATCH (p:pathogen)-->(r:resistance) -->(d:drug) RETURN d.name, COUNT(DISTINCT(r)) as resistance_count, COUNT(DISTINCT(p)) as pathogen_count ORDER BY resistance_count DESC LIMIT 10;
